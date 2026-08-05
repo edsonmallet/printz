@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function claimTenantId() {
+      return request.auth.token.tenantId;
+    }
+    function claimRole() {
+      return request.auth.token.role;
+    }
+    function isMember(tenantId) {
+      return isSignedIn() && claimTenantId() == tenantId;
+    }
+    function isAdmin(tenantId) {
+      return isMember(tenantId) && claimRole() == 'admin';
+    }
+
+    match /tenants/{tenantId} {
+      allow read: if isMember(tenantId);
+      allow write: if isAdmin(tenantId);
+
+      match /members/{memberId} {
+        allow read: if isMember(tenantId);
+        allow write: if isAdmin(tenantId);
+      }
+
+      match /settings/{settingsDoc} {
+        allow read: if isMember(tenantId);
+        allow write: if isAdmin(tenantId);
+      }
+    }
+
+    // Só Server Actions (Admin SDK) tocam pendingInvites — nunca o client.
+    match /pendingInvites/{inviteId} {
+      allow read, write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
