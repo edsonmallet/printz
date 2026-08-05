@@ -1,7 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import type { FirebaseError } from "firebase/app";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -18,6 +20,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { type LoginInput, loginSchema } from "@/modules/auth/services/auth.schema";
 import { signInWithEmail, signInWithGoogle } from "@/modules/auth/services/auth.service";
+import { provisionAccount } from "@/modules/auth/services/provision-account.action";
+import { auth } from "@/shared/services/firebase-client";
 
 const INVALID_CREDENTIAL_CODES = new Set([
   "auth/invalid-credential",
@@ -31,6 +35,7 @@ function isFirebaseError(error: unknown): error is FirebaseError {
 
 export function LoginForm() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -53,7 +58,11 @@ export function LoginForm() {
   async function onGoogleSignIn() {
     setIsGoogleSubmitting(true);
     try {
-      await signInWithGoogle();
+      const user = await signInWithGoogle();
+      const idToken = await user.getIdToken();
+      await provisionAccount({ idToken });
+      await auth.currentUser?.getIdToken(true);
+      queryClient.invalidateQueries({ queryKey: ["auth", "tenant-claims"] });
       router.push("/");
     } catch (error) {
       if (isFirebaseError(error) && error.code === "auth/popup-closed-by-user") {
@@ -108,6 +117,12 @@ export function LoginForm() {
       >
         Entrar com Google
       </Button>
+      <p className="text-sm text-muted-foreground text-center">
+        Não tem conta?{" "}
+        <Link href="/signup" className="underline">
+          Criar conta
+        </Link>
+      </p>
     </div>
   );
 }

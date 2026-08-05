@@ -85,6 +85,54 @@ describe("tenant isolation", () => {
     );
   });
 
+  it("member of tenant A can read tenant A's members", async () => {
+    const alice = testEnv.authenticatedContext("alice", { tenantId: "tenant-a", role: "member" });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("members")
+        .doc("alice")
+        .set({ email: "alice@example.com", displayName: "Alice", role: "member" });
+    });
+
+    await assertSucceeds(
+      alice.firestore().collection("tenants").doc("tenant-a").collection("members").get(),
+    );
+  });
+
+  it("member of tenant A cannot read tenant B's members", async () => {
+    const alice = testEnv.authenticatedContext("alice", { tenantId: "tenant-a", role: "member" });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-b")
+        .collection("members")
+        .doc("bob")
+        .set({ email: "bob@example.com", displayName: "Bob", role: "member" });
+    });
+
+    await assertFails(
+      alice.firestore().collection("tenants").doc("tenant-b").collection("members").get(),
+    );
+  });
+
+  it("non-admin member cannot write to tenant A's members", async () => {
+    const bob = testEnv.authenticatedContext("bob", { tenantId: "tenant-a", role: "member" });
+
+    await assertFails(
+      bob
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("members")
+        .doc("carol")
+        .set({ email: "carol@example.com", displayName: "Carol", role: "member" }),
+    );
+  });
+
   it("no client can read or write pendingInvites", async () => {
     const admin = testEnv.authenticatedContext("admin-uid", {
       tenantId: "tenant-a",

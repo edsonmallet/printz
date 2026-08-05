@@ -1,6 +1,7 @@
 "use server";
 
 import { randomUUID } from "node:crypto";
+import { inviteMemberSchema } from "@/modules/team/services/team.schema";
 import { sendEmail } from "@/shared/services/email";
 import { getAdminAuth, getAdminFirestore } from "@/shared/services/firebase-admin";
 import type { PendingInvite } from "@/shared/types/tenant";
@@ -20,11 +21,16 @@ export async function inviteMember(input: InviteMemberActionInput): Promise<void
     throw new Error("Apenas administradores podem convidar membros");
   }
 
+  const { email, role: inviteRole } = inviteMemberSchema.parse({
+    email: input.email,
+    role: input.role,
+  });
+
   const token = randomUUID();
   const invite: PendingInvite = {
-    email: input.email,
+    email,
     tenantId,
-    role: input.role,
+    role: inviteRole,
     createdAt: Date.now(),
   };
 
@@ -34,7 +40,7 @@ export async function inviteMember(input: InviteMemberActionInput): Promise<void
   const inviteUrl = `${appUrl}/signup?invite=${token}`;
 
   await sendEmail({
-    to: input.email,
+    to: email,
     subject: "Você foi convidado pra um time no Printz",
     html: `<p>Você foi convidado a entrar num time no Printz.</p><p><a href="${inviteUrl}">Clique aqui pra criar sua conta</a></p>`,
   });

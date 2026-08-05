@@ -26,6 +26,12 @@ export function useMembers(tenantId: string | undefined) {
         }));
         queryClient.setQueryData(queryKey, members);
       },
+      (error) => {
+        console.error(
+          `useMembers: falha ao ouvir tenants/${tenantId}/members (possível permission-denied por claims desatualizadas):`,
+          error,
+        );
+      },
     );
     return unsubscribe;
   }, [tenantId, queryClient]);

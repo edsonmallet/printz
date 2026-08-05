@@ -1,7 +1,13 @@
 "use server";
 
+import { z } from "zod";
 import { getAdminAuth, getAdminFirestore } from "@/shared/services/firebase-admin";
-import type { Member, PendingInvite, Tenant } from "@/shared/types/tenant";
+import type { Member, MemberRole, PendingInvite, Tenant } from "@/shared/types/tenant";
+
+const provisionAccountSchema = z.object({
+  idToken: z.string().min(1),
+  inviteToken: z.string().optional(),
+});
 
 interface ProvisionAccountInput {
   idToken: string;
@@ -14,13 +20,21 @@ interface ProvisionAccountResult {
 }
 
 export async function provisionAccount(
-  input: ProvisionAccountInput,
+  rawInput: ProvisionAccountInput,
 ): Promise<ProvisionAccountResult> {
+  const input = provisionAccountSchema.parse(rawInput);
   const decoded = await getAdminAuth().verifyIdToken(input.idToken);
   const { uid, email } = decoded;
 
   if (!email) {
     throw new Error("Token não contém e-mail");
+  }
+
+  if (decoded.tenantId) {
+    return {
+      tenantId: decoded.tenantId as string,
+      role: decoded.role as MemberRole,
+    };
   }
 
   const firestore = getAdminFirestore();
