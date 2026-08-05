@@ -16,3 +16,11 @@ export interface Printer {
   buildVolumeMm: { x: number; y: number; z: number };
   notes?: string;
 }
+
+export interface CostsSettings {
+  energyRateKwh: number;
+  laborCostPerHour: number;
+  monthlyFixedCosts: number;
+  monthlyProductiveHours: number;
+  defaultMarkup: number;
+}
