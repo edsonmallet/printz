@@ -1,0 +1,30 @@
+"use client";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MaterialsSection } from "@/modules/materials/components/materials-section";
+import { PrintersSection } from "@/modules/printers/components/printers-section";
+import { useTenant } from "@/shared/hooks/use-tenant";
+
+export function ResourcesPageContent() {
+  const { tenantId } = useTenant();
+
+  if (!tenantId) return null;
+
+  return (
+    <div className="flex flex-col gap-6">
+      <h1 className="text-xl font-semibold">Materiais e impressoras</h1>
+      <Tabs defaultValue="materials">
+        <TabsList>
+          <TabsTrigger value="materials">Materiais</TabsTrigger>
+          <TabsTrigger value="printers">Impressoras</TabsTrigger>
+        </TabsList>
+        <TabsContent value="materials">
+          <MaterialsSection tenantId={tenantId} />
+        </TabsContent>
+        <TabsContent value="printers">
+          <PrintersSection tenantId={tenantId} />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}

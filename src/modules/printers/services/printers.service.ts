@@ -1,14 +1,7 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  updateDoc,
-} from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect } from "react";
 import type { PrinterInput } from "@/modules/printers/services/printers.schema";
 import { firestore } from "@/shared/services/firebase-client";
