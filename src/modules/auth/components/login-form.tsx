@@ -14,8 +14,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { type LoginInput, loginSchema } from "@/modules/auth/services/auth.schema";
 import { signInWithEmail, signInWithGoogle } from "@/modules/auth/services/auth.service";
-import { loginSchema, type LoginInput } from "@/modules/auth/services/auth.schema";
 
 export function LoginForm() {
   const router = useRouter();
