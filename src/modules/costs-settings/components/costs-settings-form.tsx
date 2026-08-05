@@ -70,8 +70,8 @@ export function CostsSettingsForm({ tenantId }: { tenantId: string }) {
                 <Input
                   type="number"
                   step="0.01"
-                  disabled={!isAdmin}
                   {...field}
+                  disabled={!isAdmin}
                   value={Number.isNaN(field.value) ? "" : (field.value as number)}
                   onChange={(e) => field.onChange(e.target.valueAsNumber)}
                 />
@@ -90,8 +90,8 @@ export function CostsSettingsForm({ tenantId }: { tenantId: string }) {
                 <Input
                   type="number"
                   step="0.01"
-                  disabled={!isAdmin}
                   {...field}
+                  disabled={!isAdmin}
                   value={Number.isNaN(field.value) ? "" : (field.value as number)}
                   onChange={(e) => field.onChange(e.target.valueAsNumber)}
                 />
@@ -110,8 +110,8 @@ export function CostsSettingsForm({ tenantId }: { tenantId: string }) {
                 <Input
                   type="number"
                   step="0.01"
-                  disabled={!isAdmin}
                   {...field}
+                  disabled={!isAdmin}
                   value={Number.isNaN(field.value) ? "" : (field.value as number)}
                   onChange={(e) => field.onChange(e.target.valueAsNumber)}
                 />
@@ -130,8 +130,8 @@ export function CostsSettingsForm({ tenantId }: { tenantId: string }) {
                 <Input
                   type="number"
                   step="1"
-                  disabled={!isAdmin}
                   {...field}
+                  disabled={!isAdmin}
                   value={Number.isNaN(field.value) ? "" : (field.value as number)}
                   onChange={(e) => field.onChange(e.target.valueAsNumber)}
                 />
@@ -150,8 +150,8 @@ export function CostsSettingsForm({ tenantId }: { tenantId: string }) {
                 <Input
                   type="number"
                   step="0.01"
-                  disabled={!isAdmin}
                   {...field}
+                  disabled={!isAdmin}
                   value={Number.isNaN(field.value) ? "" : (field.value as number)}
                   onChange={(e) => field.onChange(e.target.valueAsNumber)}
                 />

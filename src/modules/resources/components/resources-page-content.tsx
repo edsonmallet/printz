@@ -13,7 +13,7 @@ export function ResourcesPageContent() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-xl font-semibold">Materiais e impressoras</h1>
+      <h1 className="text-xl font-semibold">Recursos e custos</h1>
       <Tabs defaultValue="materials">
         <TabsList>
           <TabsTrigger value="materials">Materiais</TabsTrigger>

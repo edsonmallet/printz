@@ -3,7 +3,10 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { useEffect } from "react";
-import type { CostsSettingsInput } from "@/modules/costs-settings/services/costs-settings.schema";
+import {
+  type CostsSettingsInput,
+  costsSettingsSchema,
+} from "@/modules/costs-settings/services/costs-settings.schema";
 import { firestore } from "@/shared/services/firebase-client";
 import type { CostsSettings } from "@/shared/types/resources";
 
@@ -17,7 +20,20 @@ export function useCostsSettings(tenantId: string | undefined) {
     const unsubscribe = onSnapshot(
       doc(firestore, "tenants", tenantId, "settings", "costs"),
       (snapshot) => {
-        queryClient.setQueryData(queryKey, snapshot.data() as CostsSettings | undefined);
+        const rawData = snapshot.data();
+        if (rawData === undefined) {
+          queryClient.setQueryData(queryKey, null);
+          return;
+        }
+        const result = costsSettingsSchema.safeParse(rawData);
+        if (!result.success) {
+          console.warn(
+            `useCostsSettings: documento tenants/${tenantId}/settings/costs inválido, ignorando`,
+            result.error,
+          );
+          return;
+        }
+        queryClient.setQueryData(queryKey, result.data);
       },
       (error) => {
         console.error(
@@ -29,12 +45,12 @@ export function useCostsSettings(tenantId: string | undefined) {
     return unsubscribe;
   }, [tenantId, queryClient]);
 
-  return useQuery<CostsSettings | undefined>({
+  return useQuery<CostsSettings | null>({
     queryKey,
-    queryFn: () => undefined,
+    queryFn: () => null,
     enabled: !!tenantId,
     staleTime: Infinity,
-    initialData: undefined,
+    initialData: null,
   });
 }
 

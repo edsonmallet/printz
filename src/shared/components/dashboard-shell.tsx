@@ -25,7 +25,7 @@ import { useTenant } from "@/shared/hooks/use-tenant";
 const navItems = [
   { href: "/", label: "Início", icon: LayoutDashboard },
   { href: "/team", label: "Time", icon: Users },
-  { href: "/settings/resources", label: "Materiais e impressoras", icon: Wrench },
+  { href: "/settings/resources", label: "Recursos e custos", icon: Wrench },
 ];
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
