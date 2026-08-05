@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import type { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,10 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  type MaterialInput,
-  materialSchema,
-} from "@/modules/materials/services/materials.schema";
+import { type MaterialInput, materialSchema } from "@/modules/materials/services/materials.schema";
 import {
   createMaterial,
   type MaterialWithId,
@@ -54,7 +52,7 @@ export function MaterialFormDialog({
   open,
   onOpenChange,
 }: MaterialFormDialogProps) {
-  const form = useForm<MaterialInput>({
+  const form = useForm<z.input<typeof materialSchema>, unknown, MaterialInput>({
     resolver: zodResolver(materialSchema),
     defaultValues: emptyValues,
   });
@@ -126,6 +124,7 @@ export function MaterialFormDialog({
                       type="number"
                       step="0.01"
                       {...field}
+                      value={field.value as number}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </FormControl>
@@ -144,6 +143,7 @@ export function MaterialFormDialog({
                       type="number"
                       step="0.01"
                       {...field}
+                      value={field.value as number}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </FormControl>
@@ -164,6 +164,7 @@ export function MaterialFormDialog({
                       min="0"
                       max="1"
                       {...field}
+                      value={field.value as number}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </FormControl>
@@ -182,6 +183,7 @@ export function MaterialFormDialog({
                       type="number"
                       step="1"
                       {...field}
+                      value={field.value as number}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </FormControl>
@@ -200,6 +202,7 @@ export function MaterialFormDialog({
                       type="number"
                       step="1"
                       {...field}
+                      value={field.value as number}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </FormControl>
