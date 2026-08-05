@@ -26,6 +26,7 @@ import {
   type PrinterWithId,
   usePrinters,
 } from "@/modules/printers/services/printers.service";
+import { useTenant } from "@/shared/hooks/use-tenant";
 
 interface PrinterListProps {
   tenantId: string;
@@ -33,6 +34,7 @@ interface PrinterListProps {
 }
 
 export function PrinterList({ tenantId, onEdit }: PrinterListProps) {
+  const { role } = useTenant();
   const { data: printers } = usePrinters(tenantId);
   const [pendingDelete, setPendingDelete] = useState<PrinterWithId | null>(null);
 
@@ -70,14 +72,16 @@ export function PrinterList({ tenantId, onEdit }: PrinterListProps) {
                 {printer.buildVolumeMm.x} x {printer.buildVolumeMm.y} x {printer.buildVolumeMm.z} mm
               </TableCell>
               <TableCell>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={() => onEdit(printer)}>
-                    Editar
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => setPendingDelete(printer)}>
-                    Excluir
-                  </Button>
-                </div>
+                {role === "admin" && (
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => onEdit(printer)}>
+                      Editar
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => setPendingDelete(printer)}>
+                      Excluir
+                    </Button>
+                  </div>
+                )}
               </TableCell>
             </TableRow>
           ))}

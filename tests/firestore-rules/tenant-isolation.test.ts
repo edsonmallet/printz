@@ -133,6 +133,136 @@ describe("tenant isolation", () => {
     );
   });
 
+  it("member can read tenant materials", async () => {
+    const alice = testEnv.authenticatedContext("alice", { tenantId: "tenant-a", role: "member" });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("materials")
+        .doc("material-1")
+        .set({ name: "PLA" });
+    });
+
+    await assertSucceeds(
+      alice.firestore().collection("tenants").doc("tenant-a").collection("materials").get(),
+    );
+  });
+
+  it("member (non-admin) cannot write tenant materials", async () => {
+    const bob = testEnv.authenticatedContext("bob", { tenantId: "tenant-a", role: "member" });
+
+    await assertFails(
+      bob
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("materials")
+        .doc("material-1")
+        .set({ name: "PLA" }),
+    );
+  });
+
+  it("admin can write tenant materials", async () => {
+    const admin = testEnv.authenticatedContext("admin-uid", {
+      tenantId: "tenant-a",
+      role: "admin",
+    });
+
+    await assertSucceeds(
+      admin
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("materials")
+        .doc("material-1")
+        .set({ name: "PLA" }),
+    );
+  });
+
+  it("member of tenant A cannot read tenant B's materials", async () => {
+    const alice = testEnv.authenticatedContext("alice", { tenantId: "tenant-a", role: "member" });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-b")
+        .collection("materials")
+        .doc("material-1")
+        .set({ name: "PLA" });
+    });
+
+    await assertFails(
+      alice.firestore().collection("tenants").doc("tenant-b").collection("materials").get(),
+    );
+  });
+
+  it("member can read tenant printers", async () => {
+    const alice = testEnv.authenticatedContext("alice", { tenantId: "tenant-a", role: "member" });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("printers")
+        .doc("printer-1")
+        .set({ name: "Ender 3" });
+    });
+
+    await assertSucceeds(
+      alice.firestore().collection("tenants").doc("tenant-a").collection("printers").get(),
+    );
+  });
+
+  it("member (non-admin) cannot write tenant printers", async () => {
+    const bob = testEnv.authenticatedContext("bob", { tenantId: "tenant-a", role: "member" });
+
+    await assertFails(
+      bob
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("printers")
+        .doc("printer-1")
+        .set({ name: "Ender 3" }),
+    );
+  });
+
+  it("admin can write tenant printers", async () => {
+    const admin = testEnv.authenticatedContext("admin-uid", {
+      tenantId: "tenant-a",
+      role: "admin",
+    });
+
+    await assertSucceeds(
+      admin
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("printers")
+        .doc("printer-1")
+        .set({ name: "Ender 3" }),
+    );
+  });
+
+  it("member of tenant A cannot read tenant B's printers", async () => {
+    const alice = testEnv.authenticatedContext("alice", { tenantId: "tenant-a", role: "member" });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-b")
+        .collection("printers")
+        .doc("printer-1")
+        .set({ name: "Ender 3" });
+    });
+
+    await assertFails(
+      alice.firestore().collection("tenants").doc("tenant-b").collection("printers").get(),
+    );
+  });
+
   it("no client can read or write pendingInvites", async () => {
     const admin = testEnv.authenticatedContext("admin-uid", {
       tenantId: "tenant-a",

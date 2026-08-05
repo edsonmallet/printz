@@ -3,7 +3,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect } from "react";
-import type { PrinterInput } from "@/modules/printers/services/printers.schema";
+import { type PrinterInput, printerSchema } from "@/modules/printers/services/printers.schema";
 import { firestore } from "@/shared/services/firebase-client";
 import type { Printer } from "@/shared/types/resources";
 
@@ -21,10 +21,17 @@ export function usePrinters(tenantId: string | undefined) {
     const unsubscribe = onSnapshot(
       collection(firestore, "tenants", tenantId, "printers"),
       (snapshot) => {
-        const printers: PrinterWithId[] = snapshot.docs.map((docSnapshot) => ({
-          id: docSnapshot.id,
-          ...(docSnapshot.data() as Printer),
-        }));
+        const printers: PrinterWithId[] = snapshot.docs.flatMap((docSnapshot) => {
+          const result = printerSchema.safeParse(docSnapshot.data());
+          if (!result.success) {
+            console.warn(
+              `usePrinters: documento tenants/${tenantId}/printers/${docSnapshot.id} inválido, ignorando`,
+              result.error,
+            );
+            return [];
+          }
+          return [{ id: docSnapshot.id, ...result.data }];
+        });
         queryClient.setQueryData(queryKey, printers);
       },
       (error) => {

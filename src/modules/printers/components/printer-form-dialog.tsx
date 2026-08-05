@@ -111,7 +111,7 @@ export function PrinterFormDialog({
                       type="number"
                       step="0.01"
                       {...field}
-                      value={field.value as number}
+                      value={Number.isNaN(field.value) ? "" : (field.value as number)}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </FormControl>
@@ -130,7 +130,7 @@ export function PrinterFormDialog({
                       type="number"
                       step="1"
                       {...field}
-                      value={field.value as number}
+                      value={Number.isNaN(field.value) ? "" : (field.value as number)}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </FormControl>
@@ -149,7 +149,7 @@ export function PrinterFormDialog({
                       type="number"
                       step="0.01"
                       {...field}
-                      value={field.value as number}
+                      value={Number.isNaN(field.value) ? "" : (field.value as number)}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </FormControl>
@@ -169,7 +169,7 @@ export function PrinterFormDialog({
                         type="number"
                         step="1"
                         {...field}
-                        value={field.value as number}
+                        value={Number.isNaN(field.value) ? "" : (field.value as number)}
                         onChange={(e) => field.onChange(e.target.valueAsNumber)}
                       />
                     </FormControl>
@@ -188,7 +188,7 @@ export function PrinterFormDialog({
                         type="number"
                         step="1"
                         {...field}
-                        value={field.value as number}
+                        value={Number.isNaN(field.value) ? "" : (field.value as number)}
                         onChange={(e) => field.onChange(e.target.valueAsNumber)}
                       />
                     </FormControl>
@@ -207,7 +207,7 @@ export function PrinterFormDialog({
                         type="number"
                         step="1"
                         {...field}
-                        value={field.value as number}
+                        value={Number.isNaN(field.value) ? "" : (field.value as number)}
                         onChange={(e) => field.onChange(e.target.valueAsNumber)}
                       />
                     </FormControl>
@@ -223,7 +223,7 @@ export function PrinterFormDialog({
                 <FormItem>
                   <FormLabel>Observações</FormLabel>
                   <FormControl>
-                    <Textarea {...field} />
+                    <Textarea {...field} value={field.value ?? ""} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

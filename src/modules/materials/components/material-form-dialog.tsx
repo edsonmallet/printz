@@ -124,7 +124,7 @@ export function MaterialFormDialog({
                       type="number"
                       step="0.01"
                       {...field}
-                      value={field.value as number}
+                      value={Number.isNaN(field.value) ? "" : (field.value as number)}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </FormControl>
@@ -143,7 +143,7 @@ export function MaterialFormDialog({
                       type="number"
                       step="0.01"
                       {...field}
-                      value={field.value as number}
+                      value={Number.isNaN(field.value) ? "" : (field.value as number)}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </FormControl>
@@ -164,7 +164,7 @@ export function MaterialFormDialog({
                       min="0"
                       max="1"
                       {...field}
-                      value={field.value as number}
+                      value={Number.isNaN(field.value) ? "" : (field.value as number)}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </FormControl>
@@ -183,7 +183,7 @@ export function MaterialFormDialog({
                       type="number"
                       step="1"
                       {...field}
-                      value={field.value as number}
+                      value={Number.isNaN(field.value) ? "" : (field.value as number)}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </FormControl>
@@ -202,7 +202,7 @@ export function MaterialFormDialog({
                       type="number"
                       step="1"
                       {...field}
-                      value={field.value as number}
+                      value={Number.isNaN(field.value) ? "" : (field.value as number)}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </FormControl>

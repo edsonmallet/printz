@@ -3,7 +3,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect } from "react";
-import type { MaterialInput } from "@/modules/materials/services/materials.schema";
+import { type MaterialInput, materialSchema } from "@/modules/materials/services/materials.schema";
 import { firestore } from "@/shared/services/firebase-client";
 import type { Material } from "@/shared/types/resources";
 
@@ -21,10 +21,17 @@ export function useMaterials(tenantId: string | undefined) {
     const unsubscribe = onSnapshot(
       collection(firestore, "tenants", tenantId, "materials"),
       (snapshot) => {
-        const materials: MaterialWithId[] = snapshot.docs.map((docSnapshot) => ({
-          id: docSnapshot.id,
-          ...(docSnapshot.data() as Material),
-        }));
+        const materials: MaterialWithId[] = snapshot.docs.flatMap((docSnapshot) => {
+          const result = materialSchema.safeParse(docSnapshot.data());
+          if (!result.success) {
+            console.warn(
+              `useMaterials: documento tenants/${tenantId}/materials/${docSnapshot.id} inválido, ignorando`,
+              result.error,
+            );
+            return [];
+          }
+          return [{ id: docSnapshot.id, ...result.data }];
+        });
         queryClient.setQueryData(queryKey, materials);
       },
       (error) => {

@@ -27,6 +27,7 @@ import {
   type MaterialWithId,
   useMaterials,
 } from "@/modules/materials/services/materials.service";
+import { useTenant } from "@/shared/hooks/use-tenant";
 
 interface MaterialListProps {
   tenantId: string;
@@ -34,6 +35,7 @@ interface MaterialListProps {
 }
 
 export function MaterialList({ tenantId, onEdit }: MaterialListProps) {
+  const { role } = useTenant();
   const { data: materials } = useMaterials(tenantId);
   const [pendingDelete, setPendingDelete] = useState<MaterialWithId | null>(null);
 
@@ -76,14 +78,16 @@ export function MaterialList({ tenantId, onEdit }: MaterialListProps) {
                 </div>
               </TableCell>
               <TableCell>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={() => onEdit(material)}>
-                    Editar
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => setPendingDelete(material)}>
-                    Excluir
-                  </Button>
-                </div>
+                {role === "admin" && (
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => onEdit(material)}>
+                      Editar
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => setPendingDelete(material)}>
+                      Excluir
+                    </Button>
+                  </div>
+                )}
               </TableCell>
             </TableRow>
           ))}
