@@ -28,12 +28,8 @@ describe("materialSchema", () => {
   });
 
   it("rejeita defaultWasteRate fora do intervalo 0-1", () => {
-    expect(materialSchema.safeParse({ ...validInput, defaultWasteRate: -0.1 }).success).toBe(
-      false,
-    );
-    expect(materialSchema.safeParse({ ...validInput, defaultWasteRate: 1.1 }).success).toBe(
-      false,
-    );
+    expect(materialSchema.safeParse({ ...validInput, defaultWasteRate: -0.1 }).success).toBe(false);
+    expect(materialSchema.safeParse({ ...validInput, defaultWasteRate: 1.1 }).success).toBe(false);
   });
 
   it("rejeita density zero ou negativa", () => {
