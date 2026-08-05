@@ -1,9 +1,11 @@
 import {
+  createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
   type User,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "@/shared/services/firebase-client";
 
@@ -19,4 +21,14 @@ export async function signInWithGoogle(): Promise<User> {
 
 export async function signOutUser(): Promise<void> {
   await signOut(auth);
+}
+
+export async function signUpWithEmail(
+  email: string,
+  password: string,
+  displayName: string,
+): Promise<User> {
+  const credential = await createUserWithEmailAndPassword(auth, email, password);
+  await updateProfile(credential.user, { displayName });
+  return credential.user;
 }
