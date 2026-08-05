@@ -1,18 +1,31 @@
 "use client";
 
+import { LayoutDashboard, LogOut, Users, Wrench } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { signOutUser } from "@/modules/auth/services/auth.service";
 import { useAuth } from "@/shared/hooks/use-auth";
 import { useTenant } from "@/shared/hooks/use-tenant";
-import { cn } from "@/shared/utils/cn";
 
 const navItems = [
-  { href: "/", label: "Início" },
-  { href: "/team", label: "Time" },
-  { href: "/settings/resources", label: "Materiais e impressoras" },
+  { href: "/", label: "Início", icon: LayoutDashboard },
+  { href: "/team", label: "Time", icon: Users },
+  { href: "/settings/resources", label: "Materiais e impressoras", icon: Wrench },
 ];
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
@@ -49,30 +62,50 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-full flex-col">
-      <header className="flex items-center justify-between border-b p-4">
-        <div className="flex items-center gap-6">
-          <span className="font-semibold">Printz</span>
-          <nav className="flex items-center gap-4">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "text-sm text-muted-foreground hover:text-foreground",
-                  pathname === item.href && "font-medium text-foreground",
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-        <Button variant="outline" onClick={handleSignOut}>
-          Sair
-        </Button>
-      </header>
-      <main className="flex-1 p-6">{children}</main>
-    </div>
+    <SidebarProvider>
+      <Sidebar collapsible="icon">
+        <SidebarHeader>
+          <span className="px-2 py-1 font-semibold">Printz</span>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {navItems.map((item) => (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === item.href}
+                      tooltip={item.label}
+                    >
+                      <Link href={item.href}>
+                        <item.icon />
+                        <span>{item.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton onClick={handleSignOut} tooltip="Sair">
+                <LogOut />
+                <span>Sair</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+      </Sidebar>
+      <SidebarInset>
+        <header className="flex items-center gap-2 border-b p-4">
+          <SidebarTrigger />
+        </header>
+        <main className="flex-1 p-6">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
