@@ -1,5 +1,5 @@
 import "server-only";
-import { type App, cert, getApps, initializeApp } from "firebase-admin/app";
+import { type App, cert, getApps, initializeApp, type ServiceAccount } from "firebase-admin/app";
 import { type Auth, getAuth } from "firebase-admin/auth";
 import { type Firestore, getFirestore } from "firebase-admin/firestore";
 
@@ -12,8 +12,15 @@ function getAdminApp(): App {
     throw new Error("FIREBASE_SERVICE_ACCOUNT_KEY não configurada");
   }
 
+  let parsedServiceAccount: ServiceAccount;
+  try {
+    parsedServiceAccount = JSON.parse(serviceAccountKey);
+  } catch {
+    throw new Error("FIREBASE_SERVICE_ACCOUNT_KEY não é um JSON válido");
+  }
+
   return initializeApp({
-    credential: cert(JSON.parse(serviceAccountKey)),
+    credential: cert(parsedServiceAccount),
   });
 }
 
