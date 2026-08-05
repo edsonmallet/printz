@@ -7,6 +7,15 @@ import { auth } from "@/shared/services/firebase-client";
 
 const AUTH_QUERY_KEY = ["auth", "current-user"] as const;
 
+function waitForFirstAuthState(): Promise<User | null> {
+  return new Promise((resolve) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe();
+      resolve(user);
+    });
+  });
+}
+
 export function useAuth() {
   const queryClient = useQueryClient();
 
@@ -19,8 +28,7 @@ export function useAuth() {
 
   const { data, isLoading } = useQuery<User | null>({
     queryKey: AUTH_QUERY_KEY,
-    queryFn: () => auth.currentUser,
-    initialData: auth.currentUser,
+    queryFn: waitForFirstAuthState,
     staleTime: Infinity,
   });
 
