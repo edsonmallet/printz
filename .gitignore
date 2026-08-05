@@ -37,6 +37,10 @@ ui-debug.log*
 .env*
 !.env.local.example
 
+# firebase service account keys (never commit)
+*firebase-adminsdk*.json
+serviceAccountKey*.json
+
 # vercel
 .vercel
 
