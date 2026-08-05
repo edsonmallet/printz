@@ -1,14 +1,23 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { signOutUser } from "@/modules/auth/services/auth.service";
 import { useAuth } from "@/shared/hooks/use-auth";
 import { useTenant } from "@/shared/hooks/use-tenant";
+import { cn } from "@/shared/utils/cn";
+
+const navItems = [
+  { href: "/", label: "Início" },
+  { href: "/team", label: "Time" },
+  { href: "/settings/resources", label: "Materiais e impressoras" },
+];
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isLoading: isAuthLoading } = useAuth();
   const { tenantId, isLoading: isTenantLoading } = useTenant();
 
@@ -42,7 +51,23 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-full flex-col">
       <header className="flex items-center justify-between border-b p-4">
-        <span className="font-semibold">Printz</span>
+        <div className="flex items-center gap-6">
+          <span className="font-semibold">Printz</span>
+          <nav className="flex items-center gap-4">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "text-sm text-muted-foreground hover:text-foreground",
+                  pathname === item.href && "font-medium text-foreground",
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
         <Button variant="outline" onClick={handleSignOut}>
           Sair
         </Button>
