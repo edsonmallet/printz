@@ -33,6 +33,7 @@ export const orderDocSchema = z.object({
   statusId: z.string(),
   assignedPrinterId: z.string(),
   partnerId: z.null(),
+  stockDebited: z.boolean(),
   createdAt: z.number(),
   updatedAt: z.number(),
 });

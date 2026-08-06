@@ -148,6 +148,7 @@ export function OrderFormDialog({ tenantId, order, open, onOpenChange }: OrderFo
       statusId: values.statusId,
       assignedPrinterId: values.assignedPrinterId,
       partnerId: null,
+      stockDebited: order?.stockDebited ?? false,
     };
 
     try {
