@@ -32,6 +32,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -237,7 +238,7 @@ export function OrderFormDialog({ tenantId, order, open, onOpenChange }: OrderFo
               />
 
               <div className="flex flex-col gap-2">
-                <FormLabel>Itens</FormLabel>
+                <Label>Itens</Label>
                 {fields.map((fieldItem, index) => (
                   <div key={fieldItem.id} className="flex items-end gap-2">
                     <FormField
