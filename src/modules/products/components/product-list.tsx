@@ -66,8 +66,8 @@ export function ProductList({ tenantId, onEdit }: ProductListProps) {
           {products.map((product) => (
             <TableRow key={product.id}>
               <TableCell>{product.name}</TableCell>
-              <TableCell>{product.weightG} g</TableCell>
-              <TableCell>{product.printTimeH} h</TableCell>
+              <TableCell>{product.weightG.toFixed(2)} g</TableCell>
+              <TableCell>{(product.printTimeH * 60).toFixed(2)} min</TableCell>
               <TableCell>R$ {product.lastCalculation.totalCost.toFixed(2)}</TableCell>
               <TableCell>R$ {product.lastCalculation.suggestedPrice.toFixed(2)}</TableCell>
               <TableCell>

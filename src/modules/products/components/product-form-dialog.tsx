@@ -85,7 +85,9 @@ export function ProductFormDialog({
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset só deve rodar quando o dialog abre ou o produto alvo muda
   useEffect(() => {
     if (open) {
-      form.reset(product ?? emptyValues);
+      form.reset(
+        product ? { ...product, printTimeH: product.printTimeH * 60 } : emptyValues,
+      );
     }
   }, [open, product]);
 
@@ -101,8 +103,10 @@ export function ProductFormDialog({
       return;
     }
 
+    const printTimeH = values.printTimeH / 60;
+
     const { totalCost, suggestedPrice } = calculateProductCost(
-      { weightG: values.weightG, printTimeH: values.printTimeH },
+      { weightG: values.weightG, printTimeH },
       material,
       printer,
       costsSettings,
@@ -110,6 +114,7 @@ export function ProductFormDialog({
 
     const productData = {
       ...values,
+      printTimeH,
       lastCalculation: { totalCost, suggestedPrice, calculatedAt: Date.now() },
     };
 
@@ -183,7 +188,7 @@ export function ProductFormDialog({
               name="printTimeH"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tempo de impressão (horas)</FormLabel>
+                  <FormLabel>Tempo de impressão (minutos)</FormLabel>
                   <FormControl>
                     <DecimalInput
                       {...field}

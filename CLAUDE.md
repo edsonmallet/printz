@@ -173,6 +173,10 @@ partnerOrders/{partnerUid}/{orderId}     // espelho, campos liberados
 - Variantes de produto (mesmo produto, materiais diferentes)
 - Billing via Stripe, branding/subdomínio por tenant
 - Integração com marketplaces (Mercado Livre)
+- Multiplicador de peso por preenchimento/suporte (`infillPercent`, `supportsExtraWeightPct`) no cálculo de custo — hoje `weightG` é só manual, sem ajuste automático
+- Acréscimo de pós-processamento no cálculo de custo (lixamento, pintura, montagem) — nível configurável por pedido/produto
+- Acréscimo de entrega expressa/urgente no preço sugerido (% sobre `suggestedPrice` conforme prazo do pedido)
+- Cálculo de custo por quantidade/lote no pedido (hoje o cálculo é por peça em `products`, não agregado em `orders`)
 
 ---
 
