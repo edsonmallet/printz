@@ -1,8 +1,8 @@
 "use client";
 
 import { useDraggable } from "@dnd-kit/core";
-import { Card, CardContent } from "@/components/ui/card";
 import type { OrderWithId } from "@/modules/orders/services/orders.service";
+import { Card, CardContent } from "@/shared/components/ui/card";
 
 interface OrderCardProps {
   order: OrderWithId;

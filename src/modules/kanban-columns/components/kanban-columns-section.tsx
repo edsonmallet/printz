@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { KanbanColumnFormDialog } from "@/modules/kanban-columns/components/kanban-column-form-dialog";
 import { KanbanColumnList } from "@/modules/kanban-columns/components/kanban-column-list";
 import {
@@ -9,6 +8,7 @@ import {
   seedDefaultColumns,
   useKanbanColumns,
 } from "@/modules/kanban-columns/services/kanban-columns.service";
+import { Button } from "@/shared/components/ui/button";
 import { useTenant } from "@/shared/hooks/use-tenant";
 
 export function KanbanColumnsSection({ tenantId }: { tenantId: string }) {

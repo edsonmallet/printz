@@ -4,6 +4,7 @@ import { ClipboardList, LayoutDashboard, LogOut, Package, Users, Wrench } from "
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { signOutUser } from "@/modules/auth/services/auth.service";
 import {
   Sidebar,
   SidebarContent,
@@ -17,8 +18,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { signOutUser } from "@/modules/auth/services/auth.service";
+} from "@/shared/components/ui/sidebar";
 import { useAuth } from "@/shared/hooks/use-auth";
 import { useTenant } from "@/shared/hooks/use-tenant";
 

@@ -3,6 +3,11 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import {
+  deletePrinter,
+  type PrinterWithId,
+  usePrinters,
+} from "@/modules/printers/services/printers.service";
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -11,8 +16,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from "@/shared/components/ui/alert-dialog";
+import { Button } from "@/shared/components/ui/button";
 import {
   Table,
   TableBody,
@@ -20,12 +25,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import {
-  deletePrinter,
-  type PrinterWithId,
-  usePrinters,
-} from "@/modules/printers/services/printers.service";
+} from "@/shared/components/ui/table";
 import { useTenant } from "@/shared/hooks/use-tenant";
 
 interface PrinterListProps {

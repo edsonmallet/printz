@@ -8,7 +8,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { type LoginInput, loginSchema } from "@/modules/auth/services/auth.schema";
+import { signInWithEmail, signInWithGoogle } from "@/modules/auth/services/auth.service";
+import { provisionAccount } from "@/modules/auth/services/provision-account.action";
+import { Button } from "@/shared/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,11 +19,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { type LoginInput, loginSchema } from "@/modules/auth/services/auth.schema";
-import { signInWithEmail, signInWithGoogle } from "@/modules/auth/services/auth.service";
-import { provisionAccount } from "@/modules/auth/services/provision-account.action";
+} from "@/shared/components/ui/form";
+import { Input } from "@/shared/components/ui/input";
 import { auth } from "@/shared/services/firebase-client";
 
 const INVALID_CREDENTIAL_CODES = new Set([

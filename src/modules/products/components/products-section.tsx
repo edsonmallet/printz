@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { useCostsSettings } from "@/modules/costs-settings/services/costs-settings.service";
 import { ProductFormDialog } from "@/modules/products/components/product-form-dialog";
 import { ProductList } from "@/modules/products/components/product-list";
 import type { ProductWithId } from "@/modules/products/services/products.service";
+import { Button } from "@/shared/components/ui/button";
 
 export function ProductsSection({ tenantId }: { tenantId: string }) {
   const [dialog, setDialog] = useState<{ open: boolean; product?: ProductWithId }>({

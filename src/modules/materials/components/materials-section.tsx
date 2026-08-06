@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { MaterialFormDialog } from "@/modules/materials/components/material-form-dialog";
 import { MaterialList } from "@/modules/materials/components/material-list";
 import type { MaterialWithId } from "@/modules/materials/services/materials.service";
+import { Button } from "@/shared/components/ui/button";
 import { useTenant } from "@/shared/hooks/use-tenant";
 
 export function MaterialsSection({ tenantId }: { tenantId: string }) {

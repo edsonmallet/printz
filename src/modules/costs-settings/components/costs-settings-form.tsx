@@ -5,17 +5,6 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { DecimalInput } from "@/components/ui/decimal-input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   type CostsSettingsInput,
   costsSettingsSchema,
@@ -24,6 +13,17 @@ import {
   saveCostsSettings,
   useCostsSettings,
 } from "@/modules/costs-settings/services/costs-settings.service";
+import { Button } from "@/shared/components/ui/button";
+import { DecimalInput } from "@/shared/components/ui/decimal-input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/shared/components/ui/form";
+import { Input } from "@/shared/components/ui/input";
 import { useTenant } from "@/shared/hooks/use-tenant";
 
 const emptyValues: CostsSettingsInput = {

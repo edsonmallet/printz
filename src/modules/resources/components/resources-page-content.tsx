@@ -1,10 +1,10 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CostsSettingsForm } from "@/modules/costs-settings/components/costs-settings-form";
 import { KanbanColumnsSection } from "@/modules/kanban-columns/components/kanban-columns-section";
 import { MaterialsSection } from "@/modules/materials/components/materials-section";
 import { PrintersSection } from "@/modules/printers/components/printers-section";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 import { useTenant } from "@/shared/hooks/use-tenant";
 
 export function ResourcesPageContent() {

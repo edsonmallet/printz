@@ -5,15 +5,21 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { DecimalInput } from "@/components/ui/decimal-input";
+import { type MaterialInput, materialSchema } from "@/modules/materials/services/materials.schema";
+import {
+  createMaterial,
+  type MaterialWithId,
+  updateMaterial,
+} from "@/modules/materials/services/materials.service";
+import { Button } from "@/shared/components/ui/button";
+import { DecimalInput } from "@/shared/components/ui/decimal-input";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/shared/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -21,14 +27,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { type MaterialInput, materialSchema } from "@/modules/materials/services/materials.schema";
-import {
-  createMaterial,
-  type MaterialWithId,
-  updateMaterial,
-} from "@/modules/materials/services/materials.service";
+} from "@/shared/components/ui/form";
+import { Input } from "@/shared/components/ui/input";
 
 const emptyValues: MaterialInput = {
   name: "",

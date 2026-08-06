@@ -1,7 +1,7 @@
 "use client";
 
 import type * as React from "react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/shared/components/ui/input";
 
 interface DecimalInputProps
   extends Omit<React.ComponentProps<typeof Input>, "value" | "onChange" | "type"> {

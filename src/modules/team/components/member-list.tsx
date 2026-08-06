@@ -1,5 +1,6 @@
 "use client";
 
+import { useMembers } from "@/modules/team/services/team.service";
 import {
   Table,
   TableBody,
@@ -7,8 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { useMembers } from "@/modules/team/services/team.service";
+} from "@/shared/components/ui/table";
 
 export function MemberList({ tenantId }: { tenantId: string }) {
   const { data: members } = useMembers(tenantId);

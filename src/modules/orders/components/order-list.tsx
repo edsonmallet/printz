@@ -1,7 +1,10 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useKanbanColumns } from "@/modules/kanban-columns/services/kanban-columns.service";
+import { type OrderWithId, useOrders } from "@/modules/orders/services/orders.service";
+import { usePrinters } from "@/modules/printers/services/printers.service";
+import { Badge } from "@/shared/components/ui/badge";
+import { Button } from "@/shared/components/ui/button";
 import {
   Table,
   TableBody,
@@ -9,10 +12,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { useKanbanColumns } from "@/modules/kanban-columns/services/kanban-columns.service";
-import { type OrderWithId, useOrders } from "@/modules/orders/services/orders.service";
-import { usePrinters } from "@/modules/printers/services/printers.service";
+} from "@/shared/components/ui/table";
 
 interface OrderListProps {
   tenantId: string;

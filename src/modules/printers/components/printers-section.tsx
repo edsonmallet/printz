@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { PrinterFormDialog } from "@/modules/printers/components/printer-form-dialog";
 import { PrinterList } from "@/modules/printers/components/printer-list";
 import type { PrinterWithId } from "@/modules/printers/services/printers.service";
+import { Button } from "@/shared/components/ui/button";
 import { useTenant } from "@/shared/hooks/use-tenant";
 
 export function PrintersSection({ tenantId }: { tenantId: string }) {

@@ -5,33 +5,6 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { DecimalInput } from "@/components/ui/decimal-input";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import { useCostsSettings } from "@/modules/costs-settings/services/costs-settings.service";
 import { useMaterials } from "@/modules/materials/services/materials.service";
 import { usePrinters } from "@/modules/printers/services/printers.service";
@@ -42,6 +15,33 @@ import {
   type ProductWithId,
   updateProduct,
 } from "@/modules/products/services/products.service";
+import { Button } from "@/shared/components/ui/button";
+import { DecimalInput } from "@/shared/components/ui/decimal-input";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/shared/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/shared/components/ui/form";
+import { Input } from "@/shared/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/ui/select";
+import { Switch } from "@/shared/components/ui/switch";
+import { Textarea } from "@/shared/components/ui/textarea";
 
 const emptyValues: ProductInput = {
   name: "",
@@ -86,9 +86,7 @@ export function ProductFormDialog({
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset só deve rodar quando o dialog abre ou o produto alvo muda
   useEffect(() => {
     if (open) {
-      form.reset(
-        product ? { ...product, printTimeH: product.printTimeH * 60 } : emptyValues,
-      );
+      form.reset(product ? { ...product, printTimeH: product.printTimeH * 60 } : emptyValues);
     }
   }, [open, product]);
 

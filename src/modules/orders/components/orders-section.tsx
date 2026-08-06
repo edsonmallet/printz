@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OrderFormDialog } from "@/modules/orders/components/order-form-dialog";
 import { OrderList } from "@/modules/orders/components/order-list";
 import { OrdersBoard } from "@/modules/orders/components/orders-board";
 import type { OrderWithId } from "@/modules/orders/services/orders.service";
+import { Button } from "@/shared/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 
 export function OrdersSection({ tenantId }: { tenantId: string }) {
   const [dialog, setDialog] = useState<{ open: boolean; order?: OrderWithId }>({ open: false });

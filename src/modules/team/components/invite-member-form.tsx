@@ -3,7 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { inviteMember } from "@/modules/team/services/invite-member.action";
+import { type InviteMemberInput, inviteMemberSchema } from "@/modules/team/services/team.schema";
+import { Button } from "@/shared/components/ui/button";
 import {
   Form,
   FormControl,
@@ -11,17 +13,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/shared/components/ui/form";
+import { Input } from "@/shared/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { inviteMember } from "@/modules/team/services/invite-member.action";
-import { type InviteMemberInput, inviteMemberSchema } from "@/modules/team/services/team.schema";
+} from "@/shared/components/ui/select";
 import { auth } from "@/shared/services/firebase-client";
 
 export function InviteMemberForm() {

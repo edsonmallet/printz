@@ -6,16 +6,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { type SignupInput, signupSchema } from "@/modules/auth/services/auth.schema";
 import {
   signInWithGoogle,
@@ -23,6 +13,16 @@ import {
   signUpWithEmail,
 } from "@/modules/auth/services/auth.service";
 import { provisionAccount } from "@/modules/auth/services/provision-account.action";
+import { Button } from "@/shared/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/shared/components/ui/form";
+import { Input } from "@/shared/components/ui/input";
 import { auth } from "@/shared/services/firebase-client";
 
 export function SignupForm() {
