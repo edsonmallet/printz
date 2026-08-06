@@ -71,14 +71,22 @@ export function OrdersBoard({ tenantId, onEdit }: OrdersBoardProps) {
 
     try {
       await updateOrder(tenantId, order.id, { ...order, statusId: newColumnId });
-
-      const targetColumn = columns.find((c) => c.id === newColumnId);
-      if (targetColumn?.isProductionEntry && user) {
-        const idToken = await user.getIdToken();
-        await debitStockForOrder({ idToken, orderId: order.id });
-      }
     } catch {
       toast.error("Não foi possível mover o pedido");
+      return;
+    }
+
+    const targetColumn = columns.find((c) => c.id === newColumnId);
+    if (!targetColumn?.isProductionEntry) return;
+
+    try {
+      if (!user) {
+        throw new Error("Sessão expirada");
+      }
+      const idToken = await user.getIdToken();
+      await debitStockForOrder({ idToken, orderId: order.id });
+    } catch {
+      toast.error("Pedido movido, mas não foi possível debitar o estoque — tente novamente");
     }
   }
 
