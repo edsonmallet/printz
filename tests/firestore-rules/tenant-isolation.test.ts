@@ -376,6 +376,52 @@ describe("tenant isolation", () => {
     );
   });
 
+  it("member (non-admin) can update a legacy order (no stockDebited field) without touching stockDebited", async () => {
+    const bob = testEnv.authenticatedContext("bob", { tenantId: "tenant-a", role: "member" });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("orders")
+        .doc("order-legacy")
+        .set({ statusId: "col-1" });
+    });
+
+    await assertSucceeds(
+      bob
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("orders")
+        .doc("order-legacy")
+        .set({ statusId: "col-2" }),
+    );
+  });
+
+  it("member (non-admin) cannot introduce stockDebited: true onto a legacy order that never had it", async () => {
+    const bob = testEnv.authenticatedContext("bob", { tenantId: "tenant-a", role: "member" });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("orders")
+        .doc("order-legacy")
+        .set({ statusId: "col-1" });
+    });
+
+    await assertFails(
+      bob
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("orders")
+        .doc("order-legacy")
+        .set({ statusId: "col-2", stockDebited: true }),
+    );
+  });
+
   it("member of tenant A cannot read tenant B's orders", async () => {
     const alice = testEnv.authenticatedContext("alice", { tenantId: "tenant-a", role: "member" });
     await testEnv.withSecurityRulesDisabled(async (context) => {

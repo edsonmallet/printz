@@ -41,16 +41,34 @@ export async function debitStockForOrder(input: DebitStockActionInput): Promise<
     }
 
     const now = Date.now();
+
+    // Vários itens do pedido podem usar o mesmo material (ex: dois produtos
+    // impressos no mesmo filamento) — agregar por materialId antes de escrever
+    // evita múltiplos `transaction.update()` no mesmo documento dentro da
+    // mesma transação.
+    const totalWeightByMaterial = new Map<string, number>();
     for (const item of order.items) {
+      totalWeightByMaterial.set(
+        item.materialId,
+        (totalWeightByMaterial.get(item.materialId) ?? 0) + item.totalWeightG,
+      );
+    }
+
+    for (const [materialId, totalWeightG] of totalWeightByMaterial) {
       const materialRef = db
         .collection("tenants")
         .doc(tenantId)
         .collection("materials")
-        .doc(item.materialId);
+        .doc(materialId);
       transaction.update(materialRef, {
-        currentStockG: FieldValue.increment(-item.totalWeightG),
+        currentStockG: FieldValue.increment(-totalWeightG),
       });
+    }
 
+    // `stockMovements` continua granular (um doc por item original) para
+    // manter o detalhe de auditoria — cada `set()` usa um doc ref novo gerado
+    // automaticamente, então não há conflito de escrita entre eles.
+    for (const item of order.items) {
       const movementRef = db.collection("tenants").doc(tenantId).collection("stockMovements").doc();
       transaction.set(movementRef, {
         materialId: item.materialId,

@@ -53,7 +53,7 @@ service cloud.firestore {
         // de client não pode mudar de valor.
         allow create: if isMember(tenantId) && request.resource.data.stockDebited == false;
         allow update: if isMember(tenantId)
-          && request.resource.data.stockDebited == resource.data.stockDebited;
+          && request.resource.data.get('stockDebited', false) == resource.data.get('stockDebited', false);
         allow delete: if isMember(tenantId);
       }
 

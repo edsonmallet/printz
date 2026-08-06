@@ -1,6 +1,14 @@
 "use client";
 
-import { DndContext, type DragEndEvent, useDroppable } from "@dnd-kit/core";
+import {
+  DndContext,
+  type DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useDroppable,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { toast } from "sonner";
 import {
   type KanbanColumnWithId,
@@ -8,7 +16,11 @@ import {
 } from "@/modules/kanban-columns/services/kanban-columns.service";
 import { OrderCard } from "@/modules/orders/components/order-card";
 import { debitStockForOrder } from "@/modules/orders/services/debit-stock.action";
-import { type OrderWithId, updateOrder, useOrders } from "@/modules/orders/services/orders.service";
+import {
+  type OrderWithId,
+  updateOrderStatus,
+  useOrders,
+} from "@/modules/orders/services/orders.service";
 import { usePrinters } from "@/modules/printers/services/printers.service";
 import { useAuth } from "@/shared/hooks/use-auth";
 
@@ -56,6 +68,10 @@ export function OrdersBoard({ tenantId, onEdit }: OrdersBoardProps) {
   const { data: columns } = useKanbanColumns(tenantId);
   const { data: printers } = usePrinters(tenantId);
   const { user } = useAuth();
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor),
+  );
 
   function printerName(printerId: string) {
     return printers.find((p) => p.id === printerId)?.name ?? printerId;
@@ -70,7 +86,7 @@ export function OrdersBoard({ tenantId, onEdit }: OrdersBoardProps) {
     if (!order || order.statusId === newColumnId) return;
 
     try {
-      await updateOrder(tenantId, order.id, { ...order, statusId: newColumnId });
+      await updateOrderStatus(tenantId, order.id, newColumnId);
     } catch {
       toast.error("Não foi possível mover o pedido");
       return;
@@ -93,7 +109,7 @@ export function OrdersBoard({ tenantId, onEdit }: OrdersBoardProps) {
   const sortedColumns = [...columns].sort((a, b) => a.order - b.order);
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div className="flex gap-3 overflow-x-auto pb-2">
         {sortedColumns.map((column) => (
           <BoardColumn

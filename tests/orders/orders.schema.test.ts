@@ -92,9 +92,12 @@ describe("orderDocSchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("rejeita documento sem stockDebited", () => {
+  it("assume stockDebited false por padrão quando omitido (pedidos legados)", () => {
     const { stockDebited, ...rest } = validDoc;
     const result = orderDocSchema.safeParse(rest);
-    expect(result.success).toBe(false);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.stockDebited).toBe(false);
+    }
   });
 });

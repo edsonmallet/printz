@@ -79,3 +79,19 @@ export async function updateOrder(
     updatedAt: Date.now(),
   });
 }
+
+// Usado pelo drag-and-drop do Board: escreve só `statusId`, nunca o documento
+// inteiro. Isso evita sobrescrever edições concorrentes (items, dueDate etc.)
+// com um snapshot de client desatualizado, e nunca toca em `stockDebited` —
+// então a regra de segurança que trava esse campo nunca é acionada por um
+// simples drag.
+export async function updateOrderStatus(
+  tenantId: string,
+  orderId: string,
+  statusId: string,
+): Promise<void> {
+  await updateDoc(doc(firestore, "tenants", tenantId, "orders", orderId), {
+    statusId,
+    updatedAt: Date.now(),
+  });
+}
