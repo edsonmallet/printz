@@ -174,7 +174,13 @@ export function OrderFormDialog({ tenantId, order, open, onOpenChange }: OrderFo
 
   async function handleForceConfirm() {
     const values = orderFormSchema.parse(form.getValues());
-    const items = buildOrderItems(values);
+    let items: OrderItem[];
+    try {
+      items = buildOrderItems(values);
+    } catch {
+      toast.error("Um dos produtos selecionados não foi encontrado");
+      return;
+    }
     setInsufficientStock(null);
     await persistOrder(values, items);
   }
