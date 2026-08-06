@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { DecimalInput } from "@/components/ui/decimal-input";
 import {
   Form,
   FormControl,
@@ -67,13 +68,11 @@ export function CostsSettingsForm({ tenantId }: { tenantId: string }) {
             <FormItem>
               <FormLabel>Tarifa de energia (R$/kWh)</FormLabel>
               <FormControl>
-                <Input
-                  type="number"
-                  step="0.01"
+                <DecimalInput
                   {...field}
                   disabled={!isAdmin}
-                  value={Number.isNaN(field.value) ? "" : (field.value as number)}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  value={field.value as number}
+                  onChange={field.onChange}
                 />
               </FormControl>
               <FormMessage />
@@ -87,13 +86,11 @@ export function CostsSettingsForm({ tenantId }: { tenantId: string }) {
             <FormItem>
               <FormLabel>Custo de mão de obra (R$/hora)</FormLabel>
               <FormControl>
-                <Input
-                  type="number"
-                  step="0.01"
+                <DecimalInput
                   {...field}
                   disabled={!isAdmin}
-                  value={Number.isNaN(field.value) ? "" : (field.value as number)}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  value={field.value as number}
+                  onChange={field.onChange}
                 />
               </FormControl>
               <FormMessage />
@@ -107,13 +104,11 @@ export function CostsSettingsForm({ tenantId }: { tenantId: string }) {
             <FormItem>
               <FormLabel>Custos fixos mensais (R$)</FormLabel>
               <FormControl>
-                <Input
-                  type="number"
-                  step="0.01"
+                <DecimalInput
                   {...field}
                   disabled={!isAdmin}
-                  value={Number.isNaN(field.value) ? "" : (field.value as number)}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  value={field.value as number}
+                  onChange={field.onChange}
                 />
               </FormControl>
               <FormMessage />
@@ -147,13 +142,11 @@ export function CostsSettingsForm({ tenantId }: { tenantId: string }) {
             <FormItem>
               <FormLabel>Markup padrão (multiplicador, ex: 2.5)</FormLabel>
               <FormControl>
-                <Input
-                  type="number"
-                  step="0.01"
+                <DecimalInput
                   {...field}
                   disabled={!isAdmin}
-                  value={Number.isNaN(field.value) ? "" : (field.value as number)}
-                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  value={field.value as number}
+                  onChange={field.onChange}
                 />
               </FormControl>
               <FormMessage />

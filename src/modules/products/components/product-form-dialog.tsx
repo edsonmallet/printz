@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { DecimalInput } from "@/components/ui/decimal-input";
 import {
   Dialog,
   DialogContent,
@@ -167,12 +168,10 @@ export function ProductFormDialog({
                 <FormItem>
                   <FormLabel>Peso (g)</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      step="0.1"
+                    <DecimalInput
                       {...field}
-                      value={Number.isNaN(field.value) ? "" : (field.value as number)}
-                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      value={field.value as number}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />
@@ -186,12 +185,10 @@ export function ProductFormDialog({
                 <FormItem>
                   <FormLabel>Tempo de impressão (horas)</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      step="0.1"
+                    <DecimalInput
                       {...field}
-                      value={Number.isNaN(field.value) ? "" : (field.value as number)}
-                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      value={field.value as number}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />

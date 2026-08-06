@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { DecimalInput } from "@/components/ui/decimal-input";
 import {
   Dialog,
   DialogContent,
@@ -107,12 +108,10 @@ export function PrinterFormDialog({
                 <FormItem>
                   <FormLabel>Custo de aquisição (R$)</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
+                    <DecimalInput
                       {...field}
-                      value={Number.isNaN(field.value) ? "" : (field.value as number)}
-                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      value={field.value as number}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />
@@ -145,12 +144,10 @@ export function PrinterFormDialog({
                 <FormItem>
                   <FormLabel>Potência média (kW)</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
+                    <DecimalInput
                       {...field}
-                      value={Number.isNaN(field.value) ? "" : (field.value as number)}
-                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      value={field.value as number}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />
