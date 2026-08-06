@@ -9,8 +9,10 @@ import {
   seedDefaultColumns,
   useKanbanColumns,
 } from "@/modules/kanban-columns/services/kanban-columns.service";
+import { useTenant } from "@/shared/hooks/use-tenant";
 
 export function KanbanColumnsSection({ tenantId }: { tenantId: string }) {
+  const { role } = useTenant();
   const [dialog, setDialog] = useState<{ open: boolean; column?: KanbanColumnWithId }>({
     open: false,
   });
@@ -25,9 +27,11 @@ export function KanbanColumnsSection({ tenantId }: { tenantId: string }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-end">
-        <Button onClick={() => setDialog({ open: true, column: undefined })}>Nova coluna</Button>
-      </div>
+      {role === "admin" && (
+        <div className="flex justify-end">
+          <Button onClick={() => setDialog({ open: true, column: undefined })}>Nova coluna</Button>
+        </div>
+      )}
       <KanbanColumnList
         tenantId={tenantId}
         onEdit={(column) => setDialog({ open: true, column })}

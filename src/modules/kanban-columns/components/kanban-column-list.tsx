@@ -26,6 +26,7 @@ import {
   type KanbanColumnWithId,
   useKanbanColumns,
 } from "@/modules/kanban-columns/services/kanban-columns.service";
+import { useTenant } from "@/shared/hooks/use-tenant";
 
 interface KanbanColumnListProps {
   tenantId: string;
@@ -33,6 +34,7 @@ interface KanbanColumnListProps {
 }
 
 export function KanbanColumnList({ tenantId, onEdit }: KanbanColumnListProps) {
+  const { role } = useTenant();
   const { data: columns } = useKanbanColumns(tenantId);
   const [pendingDelete, setPendingDelete] = useState<KanbanColumnWithId | null>(null);
 
@@ -64,14 +66,16 @@ export function KanbanColumnList({ tenantId, onEdit }: KanbanColumnListProps) {
               <TableCell>{column.name}</TableCell>
               <TableCell>{column.order}</TableCell>
               <TableCell>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={() => onEdit(column)}>
-                    Editar
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => setPendingDelete(column)}>
-                    Excluir
-                  </Button>
-                </div>
+                {role === "admin" && (
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => onEdit(column)}>
+                      Editar
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => setPendingDelete(column)}>
+                      Excluir
+                    </Button>
+                  </div>
+                )}
               </TableCell>
             </TableRow>
           ))}
