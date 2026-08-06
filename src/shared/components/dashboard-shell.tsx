@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, LogOut, Package, Users, Wrench } from "lucide-react";
+import { ClipboardList, LayoutDashboard, LogOut, Package, Users, Wrench } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -25,6 +25,7 @@ import { useTenant } from "@/shared/hooks/use-tenant";
 const navItems = [
   { href: "/", label: "Início", icon: LayoutDashboard },
   { href: "/products", label: "Produtos", icon: Package },
+  { href: "/orders", label: "Pedidos", icon: ClipboardList },
   { href: "/team", label: "Time", icon: Users },
   { href: "/settings/resources", label: "Recursos e custos", icon: Wrench },
 ];
