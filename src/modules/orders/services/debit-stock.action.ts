@@ -32,6 +32,14 @@ export async function debitStockForOrder(input: DebitStockActionInput): Promise<
       return;
     }
 
+    for (const item of order.items) {
+      if (!Number.isFinite(item.totalWeightG) || item.totalWeightG < 0) {
+        throw new Error(
+          `totalWeightG inválido para item do pedido ${input.orderId}: ${item.totalWeightG}`,
+        );
+      }
+    }
+
     const now = Date.now();
     for (const item of order.items) {
       const materialRef = db

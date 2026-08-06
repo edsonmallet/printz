@@ -48,7 +48,13 @@ service cloud.firestore {
 
       match /orders/{orderId} {
         allow read: if isMember(tenantId);
-        allow write: if isMember(tenantId);
+        // `stockDebited` só pode ser alterado pela Server Action (Admin SDK, que
+        // ignora estas regras) — na criação tem que nascer `false`, e num update
+        // de client não pode mudar de valor.
+        allow create: if isMember(tenantId) && request.resource.data.stockDebited == false;
+        allow update: if isMember(tenantId)
+          && request.resource.data.stockDebited == resource.data.stockDebited;
+        allow delete: if isMember(tenantId);
       }
 
       match /kanbanColumns/{columnId} {

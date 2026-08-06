@@ -335,7 +335,44 @@ describe("tenant isolation", () => {
         .doc("tenant-a")
         .collection("orders")
         .doc("order-1")
-        .set({ statusId: "col-1" }),
+        .set({ statusId: "col-1", stockDebited: false }),
+    );
+  });
+
+  it("member (non-admin) can create an order with stockDebited: false", async () => {
+    const bob = testEnv.authenticatedContext("bob", { tenantId: "tenant-a", role: "member" });
+
+    await assertSucceeds(
+      bob
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("orders")
+        .doc("order-1")
+        .set({ statusId: "col-1", stockDebited: false }),
+    );
+  });
+
+  it("member (non-admin) cannot flip an order's stockDebited via client update", async () => {
+    const bob = testEnv.authenticatedContext("bob", { tenantId: "tenant-a", role: "member" });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("orders")
+        .doc("order-1")
+        .set({ statusId: "col-1", stockDebited: false });
+    });
+
+    await assertFails(
+      bob
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("orders")
+        .doc("order-1")
+        .set({ statusId: "col-1", stockDebited: true }),
     );
   });
 
