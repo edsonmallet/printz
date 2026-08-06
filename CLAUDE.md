@@ -189,7 +189,7 @@ partnerOrders/{partnerUid}/{orderId}     // espelho, campos liberados
 
 ### UI: shadcn/ui
 
-- Toda a interface usa **shadcn/ui**, seguindo os padrões da própria lib (componentes copiados pra `components/ui`, Tailwind + `cn()` helper, variantes via `class-variance-authority`, tokens de tema em `globals.css`).
+- Toda a interface usa **shadcn/ui**, seguindo os padrões da própria lib (componentes copiados pra `shared/components/ui`, Tailwind + `cn()` helper, variantes via `class-variance-authority`, tokens de tema em `globals.css`).
 - Não criar componentes visuais do zero se o shadcn já tem um equivalente (button, dialog, dropdown, form, table, tabs, sonner/toast, etc.) — compor a partir deles.
 - Kanban (drag-and-drop) não é nativo do shadcn — implementar como componente próprio dentro do módulo `orders`, mas reaproveitando os primitivos visuais do shadcn (Card, Badge, etc.) pra manter consistência.
 
