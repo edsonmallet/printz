@@ -65,12 +65,27 @@ const emptyValues: OrderFormInput = {
   forceCreate: false,
 };
 
+// Interpreta/formata "YYYY-MM-DD" como meia-noite no fuso local, evitando o
+// off-by-one causado por `new Date("YYYY-MM-DD")` (que o JS interpreta como UTC).
+function parseLocalDate(dateStr: string): number {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d).getTime();
+}
+
+function formatLocalDateInput(timestamp: number): string {
+  const date = new Date(timestamp);
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
 function orderToFormValues(order: OrderWithId): OrderFormInput {
   return {
     customerName: order.customer?.name ?? "",
     customerContact: order.customer?.contact ?? "",
     items: order.items.map((item) => ({ productId: item.productId, quantity: item.quantity })),
-    dueDate: new Date(order.dueDate).toISOString().slice(0, 10),
+    dueDate: formatLocalDateInput(order.dueDate),
     statusId: order.statusId,
     assignedPrinterId: order.assignedPrinterId,
     forceCreate: false,
@@ -128,7 +143,7 @@ export function OrderFormDialog({ tenantId, order, open, onOpenChange }: OrderFo
         ? { customer: { name: values.customerName, contact: values.customerContact ?? "" } }
         : {}),
       items,
-      dueDate: new Date(values.dueDate).getTime(),
+      dueDate: parseLocalDate(values.dueDate),
       statusId: values.statusId,
       assignedPrinterId: values.assignedPrinterId,
       partnerId: null,
@@ -322,6 +337,11 @@ export function OrderFormDialog({ tenantId, order, open, onOpenChange }: OrderFo
                         ))}
                       </SelectContent>
                     </Select>
+                    {columns.length === 0 && (
+                      <p className="text-sm text-muted-foreground">
+                        Nenhuma coluna configurada. Crie uma em Recursos e custos → aba Colunas.
+                      </p>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -368,14 +388,24 @@ export function OrderFormDialog({ tenantId, order, open, onOpenChange }: OrderFo
           <AlertDialogHeader>
             <AlertDialogTitle>Estoque insuficiente</AlertDialogTitle>
             <AlertDialogDescription>
-              {insufficientStock?.map((v) => (
-                <div key={v.materialId}>
-                  Material {v.materialId}: necessário {v.required}g, disponível {v.available}g.
-                </div>
-              ))}
-              Criar o pedido mesmo assim vai deixar o estoque negativo quando for debitado.
+              Os seguintes materiais não têm estoque suficiente para este pedido:
             </AlertDialogDescription>
           </AlertDialogHeader>
+          <ul className="flex flex-col gap-1 text-sm">
+            {insufficientStock?.map((v) => {
+              const materialName =
+                materials.find((m) => m.id === v.materialId)?.name ?? v.materialId;
+              return (
+                <li key={v.materialId}>
+                  {materialName}: necessário {v.required}g, disponível {v.available}g.
+                </li>
+              );
+            })}
+          </ul>
+          <p className="text-sm text-muted-foreground">
+            Criar o pedido mesmo assim vai deixar o estoque negativo quando for debitado (o débito
+            automático de estoque ainda não está ativo nesta versão).
+          </p>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction onClick={handleForceConfirm}>Criar mesmo assim</AlertDialogAction>

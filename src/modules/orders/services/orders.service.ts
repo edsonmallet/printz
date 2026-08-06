@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { addDoc, collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteField, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect } from "react";
 import { orderDocSchema } from "@/modules/orders/services/orders.schema";
 import { firestore } from "@/shared/services/firebase-client";
@@ -72,6 +72,10 @@ export async function updateOrder(
 ): Promise<void> {
   await updateDoc(doc(firestore, "tenants", tenantId, "orders", orderId), {
     ...input,
+    // Sem `customer`, o payload precisa apagar o campo explicitamente: `updateDoc`
+    // só toca nos campos presentes no objeto, então omitir a chave deixaria um
+    // `customer` antigo "grudado" no documento em vez de limpo.
+    customer: input.customer ?? deleteField(),
     updatedAt: Date.now(),
   });
 }

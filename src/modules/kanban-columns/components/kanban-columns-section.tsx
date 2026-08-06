@@ -20,10 +20,15 @@ export function KanbanColumnsSection({ tenantId }: { tenantId: string }) {
   const hasSeeded = useRef(false);
 
   useEffect(() => {
-    if (isLoading || hasSeeded.current || columns.length > 0) return;
+    if (isLoading || hasSeeded.current || columns.length > 0 || role !== "admin") return;
     hasSeeded.current = true;
-    seedDefaultColumns(tenantId);
-  }, [isLoading, columns.length, tenantId]);
+    seedDefaultColumns(tenantId).catch((error) => {
+      console.error(
+        `KanbanColumnsSection: falha ao semear colunas padrão para tenants/${tenantId}:`,
+        error,
+      );
+    });
+  }, [isLoading, columns.length, tenantId, role]);
 
   return (
     <div className="flex flex-col gap-4">
