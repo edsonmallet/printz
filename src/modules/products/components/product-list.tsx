@@ -58,6 +58,7 @@ export function ProductList({ tenantId, onEdit }: ProductListProps) {
             <TableHead>Tempo de impressão</TableHead>
             <TableHead>Custo total</TableHead>
             <TableHead>Preço sugerido</TableHead>
+            <TableHead>Lucro real</TableHead>
             <TableHead>Calculado em</TableHead>
             <TableHead>Ações</TableHead>
           </TableRow>
@@ -70,6 +71,11 @@ export function ProductList({ tenantId, onEdit }: ProductListProps) {
               <TableCell>{(product.printTimeH * 60).toFixed(2)} min</TableCell>
               <TableCell>R$ {product.lastCalculation.totalCost.toFixed(2)}</TableCell>
               <TableCell>R$ {product.lastCalculation.suggestedPrice.toFixed(2)}</TableCell>
+              <TableCell>
+                {product.salePrice !== undefined
+                  ? `R$ ${(product.salePrice - product.lastCalculation.totalCost).toFixed(2)}`
+                  : "—"}
+              </TableCell>
               <TableCell>
                 {new Date(product.lastCalculation.calculatedAt).toLocaleDateString("pt-BR")}
               </TableCell>

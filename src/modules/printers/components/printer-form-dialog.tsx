@@ -61,17 +61,18 @@ export function PrinterFormDialog({
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset só deve rodar quando o dialog abre ou a impressora alvo muda
   useEffect(() => {
     if (open) {
-      form.reset(printer ?? emptyValues);
+      form.reset(printer ? { ...printer, avgPowerKw: printer.avgPowerKw * 1000 } : emptyValues);
     }
   }, [open, printer]);
 
   async function onSubmit(values: PrinterInput) {
+    const printerData = { ...values, avgPowerKw: values.avgPowerKw / 1000 };
     try {
       if (printer) {
-        await updatePrinter(tenantId, printer.id, values);
+        await updatePrinter(tenantId, printer.id, printerData);
         toast.success("Impressora atualizada");
       } else {
-        await createPrinter(tenantId, values);
+        await createPrinter(tenantId, printerData);
         toast.success("Impressora criada");
       }
       onOpenChange(false);
@@ -142,7 +143,7 @@ export function PrinterFormDialog({
               name="avgPowerKw"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Potência média (kW)</FormLabel>
+                  <FormLabel>Potência média (W)</FormLabel>
                   <FormControl>
                     <DecimalInput
                       {...field}

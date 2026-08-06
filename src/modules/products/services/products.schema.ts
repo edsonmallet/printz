@@ -17,6 +17,7 @@ export const productSchema = z.object({
   printerId: z.string().min(1, "Selecione uma impressora"),
   materialId: z.string().min(1, "Selecione um material"),
   printConfig: printConfigSchema,
+  salePrice: z.coerce.number().nonnegative().optional(),
 });
 
 export type ProductInput = z.infer<typeof productSchema>;

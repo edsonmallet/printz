@@ -22,4 +22,5 @@ export interface Product {
   materialId: string;
   printConfig: PrintConfig;
   lastCalculation: ProductCalculation;
+  salePrice?: number;
 }

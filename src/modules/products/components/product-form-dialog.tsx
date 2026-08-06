@@ -58,6 +58,7 @@ const emptyValues: ProductInput = {
     bedAdhesion: "",
     notes: "",
   },
+  salePrice: undefined,
 };
 
 interface ProductFormDialogProps {
@@ -112,10 +113,13 @@ export function ProductFormDialog({
       costsSettings,
     );
 
+    const { salePrice, ...rest } = values;
+
     const productData = {
-      ...values,
+      ...rest,
       printTimeH,
       lastCalculation: { totalCost, suggestedPrice, calculatedAt: Date.now() },
+      ...(salePrice !== undefined ? { salePrice } : {}),
     };
 
     try {
@@ -189,6 +193,23 @@ export function ProductFormDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tempo de impressão (minutos)</FormLabel>
+                  <FormControl>
+                    <DecimalInput
+                      {...field}
+                      value={field.value as number}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="salePrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Preço de venda real (opcional)</FormLabel>
                   <FormControl>
                     <DecimalInput
                       {...field}
