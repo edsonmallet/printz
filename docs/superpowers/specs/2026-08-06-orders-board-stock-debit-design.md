@@ -47,33 +47,61 @@ createdBy: string     // uid de quem arrastou o card
 
 ## Débito de estoque
 
-`src/modules/orders/services/stock-debit.ts`:
+**Correção de arquitetura:** `materials` só permite escrita de `admin` nas
+Firestore rules (CLAUDE.md §6), mas qualquer `member` pode arrastar um card
+(orders é `isMember` write). Um `runTransaction` direto do client falharia
+por permissão pra pedidos arrastados por um `member` não-admin. Esse
+projeto não usa Cloud Functions — escrita privilegiada passa por **Server
+Action com Admin SDK** (`"use server"`, mesmo padrão de
+`src/modules/team/services/invite-member.action.ts`: recebe `idToken`,
+valida com `getAdminAuth().verifyIdToken`, usa `getAdminFirestore()` que
+ignora as rules). É essa a peça que faz o papel do `onOrderStatusChange`
+do CLAUDE.md §7 nesse stack.
+
+`src/modules/orders/services/debit-stock.action.ts`:
 
 ```ts
-async function debitStockForOrder(
-  tenantId: string,
-  order: OrderWithId,
-  createdBy: string,
-): Promise<void>
+"use server";
+interface DebitStockActionInput {
+  idToken: string;
+  orderId: string;
+}
+async function debitStockForOrder(input: DebitStockActionInput): Promise<void>
 ```
 
-Implementado com `runTransaction`:
-1. Lê o doc do pedido dentro da transação; se `stockDebited === true`, sai
+1. `getAdminAuth().verifyIdToken(input.idToken)` → extrai `tenantId` do
+   claim; sem `tenantId`, lança erro (mesma checagem de
+   `invite-member.action.ts`, sem exigir `role === "admin"` aqui — débito é
+   ação de `member` também, igual escrita em `orders`).
+2. `getAdminFirestore().runTransaction`: lê o doc do pedido em
+   `tenants/{tenantId}/orders/{orderId}`; se `stockDebited === true`, sai
    sem fazer nada (idempotente — protege contra o usuário arrastar o card
    pra fora e de volta pra coluna de produção, ou double-fire do handler).
-2. Para cada item do pedido, `increment(-item.totalWeightG)` no
+3. Para cada item do pedido, `FieldValue.increment(-item.totalWeightG)` no
    `currentStockG` do material correspondente (sem clamping em zero —
    pedidos criados com "criar mesmo assim" já passaram por estoque
    insuficiente na criação; o débito pode deixar `currentStockG` negativo,
    isso é esperado e visível no alerta de estoque mínimo).
-3. Cria um doc em `stockMovements` por item (`type: "out"`,
-   `source: "order:{orderId}"`).
-4. Seta `order.stockDebited = true` no mesmo write.
+4. Cria um doc em `stockMovements` por item (`type: "out"`,
+   `source: "order:{orderId}"`, `createdBy` = uid do token decodificado).
+5. Seta `order.stockDebited = true` no mesmo write.
 
-Chamado pelo board sempre que um card é solto numa coluna com
-`isProductionEntry === true` — a checagem de idempotência dentro da
-transação é o que evita double-debit, não uma checagem no client antes de
-chamar.
+Chamado pelo board (client component) via `await debitStockForOrder({ idToken, orderId })`
+sempre que um card é solto numa coluna com `isProductionEntry === true` — a
+checagem de idempotência dentro da transação é o que evita double-debit,
+não uma checagem no client antes de chamar. `idToken` vem de
+`user.getIdToken()` (mesmo `useAuth()` já usado no resto do app).
+
+### Firestore rules — `stockMovements`
+
+```
+match /stockMovements/{movementId} {
+  allow read: if isMember(tenantId);
+  allow write: if false;   // só a Server Action (Admin SDK) escreve
+}
+```
+Mesmo padrão de `pendingInvites`: leitura liberada pro tenant, escrita
+nunca direta do client.
 
 ## Board
 
@@ -127,9 +155,14 @@ em `orders-section.tsx`).
 ## Testes
 
 - Unitário: nenhuma lógica pura nova além do que já existe
-  (`debitStockForOrder` depende de `runTransaction`, que precisa do
-  emulador — mesma limitação de ambiente já documentada nos specs
-  anteriores; sem teste automatizado de transação nesta etapa, só teste
-  manual/emulador quando disponível).
+  (`debitStockForOrder` depende de `getAdminFirestore().runTransaction`,
+  que precisa do emulador Firestore — mesma limitação de ambiente já
+  documentada nos specs anteriores; sem teste automatizado de transação
+  nesta etapa, só teste manual/emulador quando disponível).
 - `kanban-columns.schema.test.ts`: adicionar caso pro novo campo
   `isProductionEntry` (default `false`, aceita `true`).
+- `firestore.rules`: adicionar aos testes existentes em
+  `tests/firestore-rules/tenant-isolation.test.ts` os casos de
+  `stockMovements` (member lê, client não escreve — `assertFails` em
+  qualquer tentativa de escrita direta do client SDK, mesmo sendo admin,
+  já que a regra é `allow write: if false` incondicional).
