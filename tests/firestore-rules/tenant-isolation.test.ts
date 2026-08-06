@@ -419,4 +419,38 @@ describe("tenant isolation", () => {
         .set({ email: "x@example.com", tenantId: "tenant-a", role: "member", createdAt: 1 }),
     );
   });
+
+  it("member can read tenant stockMovements", async () => {
+    const alice = testEnv.authenticatedContext("alice", { tenantId: "tenant-a", role: "member" });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("stockMovements")
+        .doc("movement-1")
+        .set({ materialId: "pla-branco", type: "out", quantityG: 100 });
+    });
+
+    await assertSucceeds(
+      alice.firestore().collection("tenants").doc("tenant-a").collection("stockMovements").get(),
+    );
+  });
+
+  it("no client (including admin) can write tenant stockMovements", async () => {
+    const admin = testEnv.authenticatedContext("admin-uid", {
+      tenantId: "tenant-a",
+      role: "admin",
+    });
+
+    await assertFails(
+      admin
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("stockMovements")
+        .doc("movement-1")
+        .set({ materialId: "pla-branco", type: "out", quantityG: 100 }),
+    );
+  });
 });

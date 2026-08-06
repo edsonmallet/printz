@@ -14,6 +14,7 @@ export interface Order {
   statusId: string;
   assignedPrinterId: string;
   partnerId: null;
+  stockDebited: boolean;
   createdAt: number;
   updatedAt: number;
 }

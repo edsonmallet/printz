@@ -55,6 +55,11 @@ service cloud.firestore {
         allow read: if isMember(tenantId);
         allow write: if isAdmin(tenantId);
       }
+
+      match /stockMovements/{movementId} {
+        allow read: if isMember(tenantId);
+        allow write: if false;
+      }
     }
 
     // Só Server Actions (Admin SDK) tocam pendingInvites — nunca o client.
