@@ -62,7 +62,7 @@ export async function updateProduct(
   productId: string,
   input: Product,
 ): Promise<void> {
-  await updateDoc(doc(firestore, "tenants", tenantId, "products", productId), input as any);
+  await updateDoc(doc(firestore, "tenants", tenantId, "products", productId), input as Partial<Product>);
 }
 
 export async function deleteProduct(tenantId: string, productId: string): Promise<void> {
