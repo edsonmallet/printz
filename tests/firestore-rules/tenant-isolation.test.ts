@@ -325,6 +325,85 @@ describe("tenant isolation", () => {
     );
   });
 
+  it("member (non-admin) can write tenant orders", async () => {
+    const bob = testEnv.authenticatedContext("bob", { tenantId: "tenant-a", role: "member" });
+
+    await assertSucceeds(
+      bob
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("orders")
+        .doc("order-1")
+        .set({ statusId: "col-1" }),
+    );
+  });
+
+  it("member of tenant A cannot read tenant B's orders", async () => {
+    const alice = testEnv.authenticatedContext("alice", { tenantId: "tenant-a", role: "member" });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-b")
+        .collection("orders")
+        .doc("order-1")
+        .set({ statusId: "col-1" });
+    });
+
+    await assertFails(
+      alice.firestore().collection("tenants").doc("tenant-b").collection("orders").get(),
+    );
+  });
+
+  it("member (non-admin) cannot write tenant kanbanColumns", async () => {
+    const bob = testEnv.authenticatedContext("bob", { tenantId: "tenant-a", role: "member" });
+
+    await assertFails(
+      bob
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("kanbanColumns")
+        .doc("col-1")
+        .set({ name: "A produzir", order: 0 }),
+    );
+  });
+
+  it("admin can write tenant kanbanColumns", async () => {
+    const admin = testEnv.authenticatedContext("admin-uid", {
+      tenantId: "tenant-a",
+      role: "admin",
+    });
+
+    await assertSucceeds(
+      admin
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("kanbanColumns")
+        .doc("col-1")
+        .set({ name: "A produzir", order: 0 }),
+    );
+  });
+
+  it("member can read tenant kanbanColumns", async () => {
+    const alice = testEnv.authenticatedContext("alice", { tenantId: "tenant-a", role: "member" });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("kanbanColumns")
+        .doc("col-1")
+        .set({ name: "A produzir", order: 0 });
+    });
+
+    await assertSucceeds(
+      alice.firestore().collection("tenants").doc("tenant-a").collection("kanbanColumns").get(),
+    );
+  });
+
   it("no client can read or write pendingInvites", async () => {
     const admin = testEnv.authenticatedContext("admin-uid", {
       tenantId: "tenant-a",
