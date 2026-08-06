@@ -2,6 +2,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CostsSettingsForm } from "@/modules/costs-settings/components/costs-settings-form";
+import { KanbanColumnsSection } from "@/modules/kanban-columns/components/kanban-columns-section";
 import { MaterialsSection } from "@/modules/materials/components/materials-section";
 import { PrintersSection } from "@/modules/printers/components/printers-section";
 import { useTenant } from "@/shared/hooks/use-tenant";
@@ -19,6 +20,7 @@ export function ResourcesPageContent() {
           <TabsTrigger value="materials">Materiais</TabsTrigger>
           <TabsTrigger value="printers">Impressoras</TabsTrigger>
           <TabsTrigger value="costs">Custos</TabsTrigger>
+          <TabsTrigger value="kanban-columns">Colunas</TabsTrigger>
         </TabsList>
         <TabsContent value="materials">
           <MaterialsSection tenantId={tenantId} />
@@ -28,6 +30,9 @@ export function ResourcesPageContent() {
         </TabsContent>
         <TabsContent value="costs">
           <CostsSettingsForm tenantId={tenantId} />
+        </TabsContent>
+        <TabsContent value="kanban-columns">
+          <KanbanColumnsSection tenantId={tenantId} />
         </TabsContent>
       </Tabs>
     </div>
