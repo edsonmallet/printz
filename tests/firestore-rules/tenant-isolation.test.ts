@@ -263,6 +263,68 @@ describe("tenant isolation", () => {
     );
   });
 
+  it("member (non-admin) can write tenant products", async () => {
+    const bob = testEnv.authenticatedContext("bob", { tenantId: "tenant-a", role: "member" });
+
+    await assertSucceeds(
+      bob
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("products")
+        .doc("product-1")
+        .set({ name: "Vaso" }),
+    );
+  });
+
+  it("member (non-admin) can read tenant products", async () => {
+    const alice = testEnv.authenticatedContext("alice", { tenantId: "tenant-a", role: "member" });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-a")
+        .collection("products")
+        .doc("product-1")
+        .set({ name: "Vaso" });
+    });
+
+    await assertSucceeds(
+      alice.firestore().collection("tenants").doc("tenant-a").collection("products").get(),
+    );
+  });
+
+  it("member of tenant A cannot read tenant B's products", async () => {
+    const alice = testEnv.authenticatedContext("alice", { tenantId: "tenant-a", role: "member" });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-b")
+        .collection("products")
+        .doc("product-1")
+        .set({ name: "Vaso" });
+    });
+
+    await assertFails(
+      alice.firestore().collection("tenants").doc("tenant-b").collection("products").get(),
+    );
+  });
+
+  it("member of tenant A cannot write tenant B's products", async () => {
+    const alice = testEnv.authenticatedContext("alice", { tenantId: "tenant-a", role: "member" });
+
+    await assertFails(
+      alice
+        .firestore()
+        .collection("tenants")
+        .doc("tenant-b")
+        .collection("products")
+        .doc("product-1")
+        .set({ name: "Vaso" }),
+    );
+  });
+
   it("no client can read or write pendingInvites", async () => {
     const admin = testEnv.authenticatedContext("admin-uid", {
       tenantId: "tenant-a",

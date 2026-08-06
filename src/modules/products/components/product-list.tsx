@@ -58,6 +58,7 @@ export function ProductList({ tenantId, onEdit }: ProductListProps) {
             <TableHead>Tempo de impressão</TableHead>
             <TableHead>Custo total</TableHead>
             <TableHead>Preço sugerido</TableHead>
+            <TableHead>Calculado em</TableHead>
             <TableHead>Ações</TableHead>
           </TableRow>
         </TableHeader>
@@ -69,6 +70,9 @@ export function ProductList({ tenantId, onEdit }: ProductListProps) {
               <TableCell>{product.printTimeH} h</TableCell>
               <TableCell>R$ {product.lastCalculation.totalCost.toFixed(2)}</TableCell>
               <TableCell>R$ {product.lastCalculation.suggestedPrice.toFixed(2)}</TableCell>
+              <TableCell>
+                {new Date(product.lastCalculation.calculatedAt).toLocaleDateString("pt-BR")}
+              </TableCell>
               <TableCell>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" onClick={() => onEdit(product)}>

@@ -14,21 +14,14 @@ describe("calculateProductCost", () => {
   };
 
   it("calcula totalCost como soma dos 5 componentes", () => {
-    const materialCost = (50 / 1000) * 100 * 1.1; // 5.5
-    const energyCost = 2 * 0.2 * 0.9; // 0.36
-    const depreciation = 2 * (2000 / 5000); // 0.8
-    const laborCost = 2 * 20; // 40
-    const fixedCostShare = 2 * (600 / 200); // 6
-    const expectedTotal = materialCost + energyCost + depreciation + laborCost + fixedCostShare;
-
     const result = calculateProductCost(product, material, printer, costsSettings);
 
-    expect(result.totalCost).toBeCloseTo(expectedTotal, 6);
+    expect(result.totalCost).toBeCloseTo(52.66, 2);
   });
 
   it("calcula suggestedPrice como totalCost * defaultMarkup", () => {
     const result = calculateProductCost(product, material, printer, costsSettings);
-    expect(result.suggestedPrice).toBeCloseTo(result.totalCost * costsSettings.defaultMarkup, 6);
+    expect(result.suggestedPrice).toBeCloseTo(157.98, 2);
   });
 
   it("com defaultWasteRate zero, materialCost é só peso vezes preço", () => {

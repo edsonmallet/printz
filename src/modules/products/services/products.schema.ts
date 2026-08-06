@@ -6,12 +6,12 @@ const printConfigSchema = z.object({
   speedMmS: z.coerce.number().positive("Velocidade deve ser maior que zero"),
   supports: z.boolean(),
   bedAdhesion: z.string().min(1, "Adesão à mesa obrigatória"),
-  notes: z.string().optional(),
+  notes: z.string().optional().default(""),
 });
 
 export const productSchema = z.object({
   name: z.string().min(1, "Nome obrigatório"),
-  description: z.string().optional(),
+  description: z.string().optional().default(""),
   weightG: z.coerce.number().positive("Peso deve ser maior que zero"),
   printTimeH: z.coerce.number().positive("Tempo de impressão deve ser maior que zero"),
   printerId: z.string().min(1, "Selecione uma impressora"),
