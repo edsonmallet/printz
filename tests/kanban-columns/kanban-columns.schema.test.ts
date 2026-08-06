@@ -16,4 +16,21 @@ describe("kanbanColumnSchema", () => {
     const result = kanbanColumnSchema.safeParse({ name: "A produzir", order: -1 });
     expect(result.success).toBe(false);
   });
+
+  it("aceita isProductionEntry true", () => {
+    const result = kanbanColumnSchema.safeParse({
+      name: "Em fila de impressão",
+      order: 1,
+      isProductionEntry: true,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("assume isProductionEntry false por padrão quando omitido", () => {
+    const result = kanbanColumnSchema.safeParse({ name: "A produzir", order: 0 });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.isProductionEntry).toBe(false);
+    }
+  });
 });

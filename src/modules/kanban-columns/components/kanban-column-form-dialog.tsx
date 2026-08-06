@@ -22,6 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   type KanbanColumnInput,
   kanbanColumnSchema,
@@ -32,7 +33,7 @@ import {
   updateColumn,
 } from "@/modules/kanban-columns/services/kanban-columns.service";
 
-const emptyValues: KanbanColumnInput = { name: "", order: 0 };
+const emptyValues: KanbanColumnInput = { name: "", order: 0, isProductionEntry: false };
 
 interface KanbanColumnFormDialogProps {
   tenantId: string;
@@ -111,6 +112,18 @@ export function KanbanColumnFormDialog({
                     />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="isProductionEntry"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                  <FormLabel>Coluna de entrada em produção</FormLabel>
+                  <FormControl>
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
                 </FormItem>
               )}
             />
